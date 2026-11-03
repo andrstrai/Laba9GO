@@ -1,0 +1,20 @@
+[
+	{
+		"id": 1,
+		"name": "Coca-Cola",
+		"category": "Drinks",
+		"price": 136.0
+	},
+	{
+		"id": 2,
+		"name": "Pepsi-Cola",
+		"category": "Drinks",
+		"price": 110.0
+	},
+	{
+		"id": 3,
+		"name": "Chips",
+		"category": "Eats",
+		"price": 215.50
+	}
+]
