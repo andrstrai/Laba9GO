@@ -126,6 +126,7 @@ func main() {
 		fmt.Println("Меню команд:")
 		fmt.Println("1 - Прочитать JSON файл с продуктами")
 		fmt.Println("2 - Прочитать CSV файл с продажами")
+		fmt.Println("3 - Сформировать отчёт report.json")
 		fmt.Println("0 - Завершить работу")
 		fmt.Println("Выберите пункт из меню управления: ")
 
@@ -156,6 +157,11 @@ func main() {
 			err := LoadSalesFromCSV(filename, &mysales)
 			if err != nil {
 				fmt.Println(err)
+			}
+		case 3:
+			err := WriteReport(myproducts, mysales, 10, "report.json")
+			if err != nil {
+				fmt.Println("Ошибка:", err)
 			}
 		default:
 			fmt.Println("Нет такого пункта меню!")
