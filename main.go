@@ -26,17 +26,15 @@ type Sale struct {
 	Date     string `json:"date"`
 }
 
-func LoadProductsFromJSON(filename string, product *[]Product) {
+func LoadProductsFromJSON(filename string, product *[]Product) error {
 	data, err := os.ReadFile(filename)
 	if err != nil {
-		fmt.Println("Ошибка чтения имени файла.")
-		return
+		return fmt.Errorf("Ошибка чтения имени файла.")
 	}
 	var products []Product
 	err = json.Unmarshal(data, &products)
 	if err != nil {
-		fmt.Println("Ошибка разбора JSON.")
-		return
+		return fmt.Errorf("Ошибка разбора JSON.")
 	}
 	for i := 0; i < len(products); i++ {
 		fmt.Println("----------")
@@ -52,12 +50,13 @@ func LoadProductsFromJSON(filename string, product *[]Product) {
 		productss.Price = products[i].Price
 		*product = append(*product, productss)
 	}
+	return nil
 }
-func LoadSalesFromCSV(filename string, sales *[]Sale) {
+
+func LoadSalesFromCSV(filename string, sales *[]Sale) error {
 	data, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("Ошибка чтения имени файла.")
-		return
+		return fmt.Errorf("Ошибка чтения имени файла.")
 	}
 	defer data.Close()
 
@@ -93,6 +92,7 @@ func LoadSalesFromCSV(filename string, sales *[]Sale) {
 		sale.Date = rec[3]
 		*sales = append(*sales, sale)
 	}
+	return nil
 }
 
 // функция для очистки экрана (работает и на Windows, и на macOS/Linux)
@@ -140,12 +140,18 @@ func main() {
 			fmt.Println("Пожалуйста, введите имя файла: ")
 			input, _ := reader.ReadString('\n')
 			filename := strings.TrimSpace(input)
-			LoadProductsFromJSON(filename, &myproducts)
+			err := LoadProductsFromJSON(filename, &myproducts)
+			if err != nil {
+				fmt.Println(err)
+			}
 		case 2:
 			fmt.Println("Пожалуйста, введите имя файла: ")
 			input, _ := reader.ReadString('\n')
 			filename := strings.TrimSpace(input)
-			LoadSalesFromCSV(filename, &mysales)
+			err := LoadSalesFromCSV(filename, &mysales)
+			if err != nil {
+				fmt.Println(err)
+			}
 		default:
 			fmt.Println("Нет такого пункта меню!")
 		}
