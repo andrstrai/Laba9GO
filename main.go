@@ -20,10 +20,10 @@ type Product struct {
 	Price    float64 `json:"price"`
 }
 type Sale struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Quantity int    `json:"quantity"`
-	Date     string `json:"date"`
+	ProductID uint   `json:"product_id"`
+	Name      string `json:"name"`
+	Quantity  int    `json:"quantity"`
+	Date      string `json:"date"`
 }
 
 func LoadProductsFromJSON(filename string, product *[]Product) error {
@@ -82,7 +82,12 @@ func LoadSalesFromCSV(filename string, sales *[]Sale) error {
 		fmt.Println("Date: ", rec[3])
 		// cоздаем срез Sale и заполняем ее данными из CSV
 		sale := Sale{}
-		sale.ID = rec[0]
+		id, err := strconv.ParseUint(rec[0], 10, 64)
+		if err != nil {
+			fmt.Println("Ошибка: ID товара не является числом в строке", rec)
+			continue // Пропускаем строку
+		}
+		sale.ProductID = uint(id)
 		sale.Name = rec[1]
 		sale.Quantity, err = strconv.Atoi(rec[2])
 		if err != nil {
