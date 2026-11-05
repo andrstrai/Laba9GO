@@ -127,6 +127,12 @@ func main() {
 		fmt.Println("1 - Прочитать JSON файл с продуктами")
 		fmt.Println("2 - Прочитать CSV файл с продажами")
 		fmt.Println("3 - Сформировать отчёт report.json")
+		fmt.Println("4 - Общая выручка")
+		fmt.Println("5 - Топ продаваемых товаров")
+		fmt.Println("6 - Фильтр товаров по категории")
+		fmt.Println("7 - Фильтр товаров по цене")
+		fmt.Println("8 - Статистика по категориям")
+		fmt.Println("9 - Несогласованные продажи")
 		fmt.Println("0 - Завершить работу")
 		fmt.Println("Выберите пункт из меню управления: ")
 
@@ -163,6 +169,50 @@ func main() {
 			if err != nil {
 				fmt.Println("Ошибка:", err)
 			}
+		case 4:
+			PrintTotalRevenue(myproducts, mysales)
+
+		case 5:
+			fmt.Print("Сколько товаров показать в топе (Enter — 10): ")
+			nStr := readLineTrim(reader)
+			n := 10
+			if nStr != "" {
+				var err error
+				n, err = strconv.Atoi(nStr)
+				if err != nil || n <= 0 {
+					fmt.Println("Некорректное число, показываю топ-10.")
+					n = 10
+				}
+			}
+			PrintProductSales(TopProducts(myproducts, mysales, n))
+
+		case 6:
+			fmt.Print("Введите категорию: ")
+			PrintFilteredByCategory(myproducts, readLineTrim(reader))
+
+		case 7:
+			fmt.Print("Минимальная цена: ")
+			min, err := strconv.ParseFloat(readLineTrim(reader), 64)
+			if err != nil {
+				fmt.Println("Некорректная цена.")
+				break
+			}
+			fmt.Print("Максимальная цена: ")
+			max, err := strconv.ParseFloat(readLineTrim(reader), 64)
+			if err != nil {
+				fmt.Println("Некорректная цена.")
+				break
+			}
+			if min > max {
+				min, max = max, min // не падать, а просто поменять местами
+			}
+			PrintFilteredByPrice(myproducts, min, max)
+
+		case 8:
+			PrintCategoryStats(CategoryStats(myproducts, mysales))
+
+		case 9:
+			PrintUnknownSales(UnknownSales(myproducts, mysales))
 		default:
 			fmt.Println("Нет такого пункта меню!")
 		}
